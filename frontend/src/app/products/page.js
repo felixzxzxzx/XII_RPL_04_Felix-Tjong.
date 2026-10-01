@@ -71,6 +71,19 @@ export default function ProductsPage() {
     }
   }, [isAdmin, isOwner, loadProducts]);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('created') === '1') {
+        setFlash({
+          type: 'success',
+          message: 'Produk baru berhasil ditambahkan.'
+        });
+        window.history.replaceState(null, '', '/products');
+      }
+    }
+  }, []);
+
   const handleSearch = (e) => {
     e.preventDefault();
     setPage(1);

@@ -33,6 +33,72 @@ Aplikasi ini dibangun menggunakan tumpukan teknologi (*technology stack*) standa
 
 ---
 
+## 🗄️ Diagram Relasi Entitas (*Entity Relationship Diagram* / ERD)
+
+Aplikasi memiliki **4 tabel berelasi** pada basis data MySQL:
+
+```mermaid
+erDiagram
+    users ||--o{ orders : "melayani (1:N)"
+    orders ||--|{ order_details : "memiliki (1:N)"
+    products ||--o{ order_details : "tercatat_pada (1:N)"
+
+    users {
+        BIGINT id PK "Primary Key"
+        VARCHAR name "Nama lengkap kasir/owner"
+        VARCHAR username UK "Username unik"
+        VARCHAR password "Hash Bcrypt"
+        ENUM role "admin / owner"
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    products {
+        BIGINT id PK "Primary Key"
+        VARCHAR name UK "Nama produk unik"
+        VARCHAR category "Kopi / Non-Kopi / Makanan"
+        INT price "Harga jual > 0"
+        INT stock "Stok fisik >= 0"
+        VARCHAR image_url "URL foto produk"
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    orders {
+        BIGINT id PK "Nomor Struk Transaksi"
+        BIGINT user_id FK "Relasi ke users.id"
+        INT total_price "Total belanja > 0"
+        ENUM payment_method "Tunai / QRIS"
+        INT amount_paid "Uang bayar >= total"
+        INT change_amount "Kembalian >= 0"
+        TIMESTAMP created_at "Waktu transaksi"
+    }
+
+    order_details {
+        BIGINT id PK "Primary Key"
+        BIGINT order_id FK "Relasi ke orders.id (CASCADE)"
+        BIGINT product_id FK "Relasi ke products.id (RESTRICT)"
+        INT price "Snapshot harga satuan"
+        INT qty "Jumlah beli > 0"
+        INT subtotal "price * qty"
+    }
+```
+
+---
+
+## 📋 6 Kebutuhan Fungsional Utama (*Functional Requirements*)
+
+| Kode | Kebutuhan Fungsional | Deskripsi Implementasi |
+| :---: | :--- | :--- |
+| **FR-01** | Autentikasi & Sesi Login | Login Kasir & Owner dengan enkripsi Bcrypt, token JWT, dan proteksi sesi peramban. |
+| **FR-02** | Manajemen Menu & Foto Produk | CRUD produk (Kopi, Non-Kopi, Makanan), unggah foto ke server lokal, dan proteksi data transaksi. |
+| **FR-03** | Pembatasan Hak Akses (*RBAC*) | Kasir hanya input transaksi & ubah stok; Owner berhak mengelola menu dan memantau keuangan. |
+| **FR-04** | Layar Transaksi Kasir (*POS*) | Katalog produk 2 kolom, keranjang belanja, kalkulasi otomatis Tunai/QRIS, dan pemotongan stok atomik. |
+| **FR-05** | Format & Cetak Struk Pembayaran | Tampilan nota standar kasir termal dengan tombol cetak peramban (`window.print()`). |
+| **FR-06** | Riwayat Transaksi & Laporan Harian | Rekapitulasi penjualan per tanggal, filter metode bayar, omset hari ini, dan Top 5 produk terlaris. |
+
+---
+
 ## 📁 Struktur Direktori Proyek
 
 ```text

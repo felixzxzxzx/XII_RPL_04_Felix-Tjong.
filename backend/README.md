@@ -18,6 +18,48 @@ Bagian *Back-End* berfungsi sebagai pusat pemrosesan logika bisnis (*business lo
 
 Aplikasi menggunakan basis data **MySQL (InnoDB)** yang mendukung relasi antar-tabel serta integritas data (*Foreign Key Constraints*). Skema lengkap dapat dilihat pada berkas [`schema.sql`](./schema.sql).
 
+```mermaid
+erDiagram
+    users ||--o{ orders : "melayani (1:N)"
+    orders ||--|{ order_details : "memiliki (1:N)"
+    products ||--o{ order_details : "tercatat_pada (1:N)"
+
+    users {
+        BIGINT id PK "Primary Key"
+        VARCHAR name "Nama lengkap kasir/owner"
+        VARCHAR username UK "Username unik"
+        VARCHAR password "Hash Bcrypt"
+        ENUM role "admin / owner"
+    }
+
+    products {
+        BIGINT id PK "Primary Key"
+        VARCHAR name UK "Nama produk unik"
+        VARCHAR category "Kopi / Non-Kopi / Makanan"
+        INT price "Harga jual > 0"
+        INT stock "Stok fisik >= 0"
+        VARCHAR image_url "URL foto produk"
+    }
+
+    orders {
+        BIGINT id PK "Nomor Struk Transaksi"
+        BIGINT user_id FK "Relasi ke users.id"
+        INT total_price "Total belanja > 0"
+        ENUM payment_method "Tunai / QRIS"
+        INT amount_paid "Uang bayar >= total"
+        INT change_amount "Kembalian >= 0"
+    }
+
+    order_details {
+        BIGINT id PK "Primary Key"
+        BIGINT order_id FK "Relasi ke orders.id (CASCADE)"
+        BIGINT product_id FK "Relasi ke products.id (RESTRICT)"
+        INT price "Snapshot harga satuan"
+        INT qty "Jumlah beli > 0"
+        INT subtotal "price * qty"
+    }
+```
+
 ### A. Tabel Pengguna (`users`)
 Menyimpan kredensial autentikasi pengguna sistem (Kasir dan Pemilik).
 | Nama Kolom (*Field*) | Tipe Data | Keterangan & Aturan |

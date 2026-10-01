@@ -26,6 +26,7 @@ export default function CreateProductPage() {
   const [imagePreview, setImagePreview] = useState('');
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   if (!isOwner) {
@@ -95,7 +96,10 @@ export default function CreateProductPage() {
     setSubmitting(false);
 
     if (res.ok) {
-      router.push('/products');
+      setSuccessMessage(res.message || 'Produk baru berhasil ditambahkan.');
+      setTimeout(() => {
+        router.push('/products?created=1');
+      }, 1000);
     } else {
       if (res.errors) {
         setErrors(res.errors);
@@ -122,6 +126,14 @@ export default function CreateProductPage() {
           Lengkapi data produk dan upload foto untuk ditampilkan pada layar kasir POS
         </p>
       </div>
+
+      {successMessage && (
+        <FlashAlert
+          type="success"
+          message={successMessage}
+          onClose={() => setSuccessMessage('')}
+        />
+      )}
 
       {serverError && (
         <FlashAlert
