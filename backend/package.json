@@ -1,0 +1,36 @@
+{
+  "name": "pos-coffee-backend",
+  "version": "1.0.0",
+  "description": "Backend POS Web Coffee Shop UMKM using Express.js, MySQL2, JWT, and Bcrypt",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "migrate": "node src/scripts/migrate.js",
+    "seed": "node src/scripts/seed.js",
+    "db:init": "node src/scripts/initDb.js",
+    "test": "node tests/test-scenarios.js"
+  },
+  "keywords": [
+    "pos",
+    "express",
+    "mysql2",
+    "jwt",
+    "bcrypt",
+    "coffee-shop"
+  ],
+  "author": "Felix",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.22.3",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.10.0",
+    "multer": "^2.4.0",
+    "mysql2": "^3.12.0"
+  }
+}
